@@ -4,5 +4,5 @@ export type userWalletDTO = {
   userId: string
   firstname: string
   lastname: string
-  Wallet?: wallet
+  Wallet: wallet
 }

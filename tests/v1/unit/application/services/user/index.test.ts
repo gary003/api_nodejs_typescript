@@ -9,9 +9,9 @@ import chai from 'chai'
 import { addCurrency, deleteUserById, saveNewUser, transferMoney, transferMoneyParamsValidator, transferMoneyWithRetry } from '../../../../../../src/v1/application/services/user/index'
 import { moneyTransferParamsValidatorErrors, transferMoneyErrors, userFunctionsErrors, transferMoneyWithRetryErrors } from '../../../../../../src/v1/application/services/user/error.dto'
 import { transactionQueryRunnerType } from '../../../../../../src/v1/infrastructure/persistance/connection/connectionFile'
-import { userInfo } from '../../../../../../src/v1/infrastructure/persistance/user/dto'
 import logger from '../../../../../../src/v1/helpers/logger'
 import { errorType } from '../../../../../../src/v1/domain/error'
+import { userWalletDTO } from '../../../../../../src/v1/application/services/user/dto'
 
 describe('Unit tests user', () => {
   const sandbox: SinonSandbox = createSandbox()
@@ -80,7 +80,7 @@ describe('Unit tests user', () => {
       sandbox.restore()
     })
     it('should succeed adding currency', async () => {
-      const mockGetUserWalletInfo = sandbox.stub(modUserDB, 'getUserWalletInfoDB').resolves({ Wallet: { walletId: '12345' } } as unknown as userInfo)
+      const mockGetUserWalletInfo = sandbox.stub(modUserDB, 'getUserWalletInfoDB').resolves({ Wallet: { walletId: '12345' } } as unknown as userWalletDTO)
       const mockUpdateWalletByWalletIdDB = sandbox.stub(modWalletDB, 'updateWalletByWalletIdDB').resolves(true)
 
       const amountToAdd = 150
@@ -187,7 +187,7 @@ describe('Unit tests user', () => {
         userId: 'fake_22ef5564-0234-11ed-b939-0242ac120002',
         firstname: 'fake_Eugene',
         lastname: 'fake_Porter',
-        wallet: {
+        Wallet: {
           walletId: 'fake_515f73c2-027d-11ed-b939-0242ac120002',
           hardCurrency: 2000,
           softCurrency: 2000
@@ -198,7 +198,7 @@ describe('Unit tests user', () => {
         userId: 'fake_22ef5564-0234-11ed-b939-0242ac120002',
         firstname: 'fake_Eugene',
         lastname: 'fake_Porter',
-        wallet: {
+        Wallet: {
           walletId: 'fake_515f73c2-027d-11ed-b939-0242ac120002',
           hardCurrency: 2000,
           softCurrency: 2000
@@ -354,7 +354,7 @@ describe('Unit tests user', () => {
     })
     it('Successful transfer', async () => {
       // Mock all the dependent functions
-      const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').resolves([{ Wallet: { walletId: '1234', softCurrency: 123 } }, { Wallet: { walletId: '4321', softCurrency: 300 } }] as unknown as userInfo[])
+      const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').resolves([{ Wallet: { walletId: '1234', softCurrency: 123 } }, { Wallet: { walletId: '4321', softCurrency: 300 } }] as unknown as userWalletDTO[])
       const mockCreateAndStartTransaction = sandbox.stub(modConnection, 'createAndStartTransaction').resolves({ someTransactionObject: true } as unknown as transactionQueryRunnerType)
       const mockAcquireLockOnWallet = sandbox.stub(modConnection, 'acquireLockOnWallet').resolves(true)
       const mockUpdateWalletByWalletIdTransaction = sandbox.stub(modWalletDB, 'updateWalletByWalletIdTransaction').resolves(true) // Assuming update functions return success indicator (modify as needed)
@@ -389,7 +389,6 @@ describe('Unit tests user', () => {
       // Expect the result to be true (successful transfer)
       chai.assert.isTrue(result)
     })
-
     it('Transfer failure due to transferMoneyParamsValidator error', async () => {
       const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').rejects(new Error('Validation Error'))
       const mockCreateAndStartTransaction = sandbox.stub(modConnection, 'createAndStartTransaction').resolves({ someTransactionObject: true } as unknown as transactionQueryRunnerType)
@@ -411,7 +410,7 @@ describe('Unit tests user', () => {
       }
     })
     it('Transfer failure due to createAndStartTransaction error', async () => {
-      const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').resolves([{}, {}] as unknown as userInfo[])
+      const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').resolves([{}, {}] as unknown as userWalletDTO[])
       const mockCreateAndStartTransaction = sandbox.stub(modConnection, 'createAndStartTransaction').rejects(new Error('Transaction Error'))
       const mockAcquireLockOnWallet = sandbox.stub(modConnection, 'acquireLockOnWallet')
       const mockErrorLogger = sandbox.stub(logger, 'error')
@@ -432,7 +431,7 @@ describe('Unit tests user', () => {
       }
     })
     it('Transfer failure due to acquireLockOnWallet failure (giver)', async () => {
-      const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').resolves([{ Wallet: { walletId: '1234', softCurrency: 123 } }, { Wallet: { walletId: '4321', softCurrency: 300 } }] as unknown as userInfo[])
+      const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').resolves([{ Wallet: { walletId: '1234', softCurrency: 123 } }, { Wallet: { walletId: '4321', softCurrency: 300 } }] as unknown as userWalletDTO[])
       const mockCreateAndStartTransaction = sandbox.stub(modConnection, 'createAndStartTransaction').resolves({ someTransactionObject: true } as unknown as transactionQueryRunnerType)
       const mockAcquireLockOnWallet = sandbox.stub(modConnection, 'acquireLockOnWallet')
       mockAcquireLockOnWallet.onFirstCall().resolves(false)
@@ -460,7 +459,7 @@ describe('Unit tests user', () => {
       }
     })
     it('Transfer failure due to acquireLockOnWallet failure (recipient)', async () => {
-      const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').resolves([{ Wallet: { walletId: '1234', softCurrency: 123 } }, { Wallet: { walletId: '4321', softCurrency: 300 } }] as unknown as userInfo[])
+      const mockTransferMoneyParamsValidator = sandbox.stub(modUser, 'transferMoneyParamsValidator').resolves([{ Wallet: { walletId: '1234', softCurrency: 123 } }, { Wallet: { walletId: '4321', softCurrency: 300 } }] as unknown as userWalletDTO[])
       const mockCreateAndStartTransaction = sandbox.stub(modConnection, 'createAndStartTransaction').resolves({ someTransactionObject: true } as unknown as transactionQueryRunnerType)
       const mockAcquireLockOnWallet = sandbox.stub(modConnection, 'acquireLockOnWallet')
       mockAcquireLockOnWallet.onFirstCall().resolves(true)

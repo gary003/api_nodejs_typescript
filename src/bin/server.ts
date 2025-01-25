@@ -30,8 +30,7 @@ server.on('error', async (error) => {
 })
 
 server.on('listening', async () => {
-  logger.info(`app running on http://${localIp}:${port}`)
-  logger.info(`api documentation on http://${localIp}:${port}/apiDoc`)
+  logger.info(`app running on http://${localIp}:${port}, api documentation on http://${localIp}:${port}/apiDoc`)
 })
 
 // Setup process handlers

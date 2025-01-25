@@ -1,11 +1,11 @@
-import { userInfo } from '../../../infrastructure/persistance/user/dto'
+import { userWalletDTO } from '../../services/user/dto'
 
 export type apiResponseGetAllUserType = {
-  data: userInfo[]
+  data: userWalletDTO[]
 }
 
 export type apiResponseGetUserType = {
-  data: userInfo
+  data: userWalletDTO
 }
 
 export type apiResponseDeleteUserType = {

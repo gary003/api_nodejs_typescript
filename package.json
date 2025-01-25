@@ -3,7 +3,7 @@
   "description": "This is a project used as a portfolio",
   "name": "api_backend_template",
   "version": "1.0.0",
-  "main": "./dist/bin/server.js",
+  "main": "./src/v1/bin/server.js",
   "scripts": {
     "start": "npm run clean && docker-compose up",
     "stop": "npm run clean",
@@ -11,13 +11,12 @@
     "docker-launch": "npx pm2-docker start ./dist/bin/server.js -i 0",
     "clean": "npx pm2 kill && docker-compose down --rmi all",
     "lint": "npx eslint .",
-    "test": "npm run eslint && npm run test:v1",
+    "test": "npm run lint && npm run test:v1",
     "test:v1": "npm run clean && npx c8 mocha -r ts-node/register --timeout 400000 './tests/v1/**/*.test.ts'",
     "test:v1:functional": "npm run clean && npx c8 mocha -r ts-node/register --timeout 400000 './tests/v1/functional/**/*.test.ts'",
-    "test:v1:unit": "npx c8 mocha -r ts-node/register --timeout 400000 './tests/v1/unit/**/*.test.ts'"
+    "test:v1:unit": "npx c8 mocha -r ts-node/register --timeout 500000 './tests/v1/unit/**/*.test.ts'"
   },
   "dependencies": {
-    "@types/node-fetch": "^2.6.12",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.4.7",
@@ -41,6 +40,7 @@
     "@types/ip": "^1.1.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.18.96",
+    "@types/node-fetch": "^2.6.12",
     "@types/sinon": "^10.0.13",
     "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.3",

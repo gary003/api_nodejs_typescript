@@ -33,10 +33,10 @@
 ## Git Installation
 
 - Clone the project :
-  `git clone https://github.com/gary003/api_typeorm_sinon.git`
+  `git clone https://github.com/gary003/rest_api_nodejs_typescript.git`
 
 - Go into the project directory:
-  `cd api_typeorm_sinon`
+  `cd rest_api_nodejs_typescript`
 
 - Install the dependences:
   `npm install`
